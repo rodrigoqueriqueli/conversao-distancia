@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: conversao-distancia
+spec: 
+    replicas: 8
+    selector:
+        matchLabels:
+            app: conversao-distancia
+    template:
+        metadata:
+            labels: 
+                app: conversao-distancia
+        spec:           #template do pod
+            containers:
+            - name: conversao-distancia #mome do container dentro do pod, nao da imagem
+              image: rdqueriqueli/conversao-distancia:v2
+              ports:
+                - containerPort: 5000
+---
+
+#especificando o service
+apiVersion: v1
+kind: Service
+metadata:
+    name: conversao-distancia
+spec:   #definir os pods que eu vou expor com esse service
+    selector:
+        app: conversao-distancia
+    ports:
+    - port: 80
+      targetPort: 5000 #redirecionando pra essa porta (essa eh a porta alvo)
+      nodePort: 30000
+    type: NodePort
+
